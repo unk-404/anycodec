@@ -38,6 +38,8 @@ const Map<String, List<String>> _requiredPerJob = {
     'flutter analyze',
     'check_archive.dart',
     'validate_workflows.dart',
+    'unresolved doc reference',
+    'libgstreamer1.0-dev',
   ],
   'rust-tests': [
     'ubuntu-latest',
@@ -68,6 +70,8 @@ const Map<String, List<String>> _requiredPerJob = {
   'publish': [
     'check_archive.dart',
     'validate_workflows.dart',
+    'unresolved doc reference',
+    'libgstreamer1.0-dev',
     'dart pub publish --dry-run',
     'dart pub publish --force',
     'Tag matches pubspec',

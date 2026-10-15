@@ -67,6 +67,22 @@ jobs:
       # `dart analyze` at the package root does NOT look at `hook/`, so the build
       # hook needs its own pass. It is compiled rather than analyzed by the SDK,
       # which is why a `hook/`-only error can survive a green root analyze.
+      # `check_archive.dart` runs `dart pub publish --dry-run`, and pub runs the
+      # BUILD HOOKS to validate the package, so this job compiles the Linux
+      # backend after all - it needs GStreamer's `.pc` files even though nothing
+      # here runs a Rust command.
+      - name: Install GStreamer (Linux)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev \
+            gstreamer1.0-plugins-base gstreamer1.0-plugins-good \
+            gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly \
+            gstreamer1.0-libav
+          pkg-config --modversion gstreamer-1.0
+
       - name: Analyze (package)
         shell: bash
         run: dart analyze
@@ -92,6 +108,20 @@ jobs:
       - name: The workflows are well formed
         shell: bash
         run: dart run .github/scripts/validate_workflows.dart
+
+      # pana deducts for every `unresolved doc reference` dartdoc reports, and
+      # `dart doc` exits 0 regardless - so the output is the signal, not the exit
+      # code. Nine of these were in the 0.1.0 release.
+      - name: Docs have no unresolved references
+        shell: bash
+        run: |
+          set -euo pipefail
+          dart doc --output /tmp/anycodec-doc > /tmp/anycodec-doc.log 2>&1 || true
+          cat /tmp/anycodec-doc.log
+          if grep -q 'unresolved doc reference' /tmp/anycodec-doc.log; then
+            echo "::error::dartdoc reported unresolved doc references; pana deducts for each"
+            exit 1
+          fi
 
       # The gate that would have caught a published-but-uncompilable package.
       - name: Would the published archive work?

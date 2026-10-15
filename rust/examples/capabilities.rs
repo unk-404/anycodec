@@ -14,7 +14,7 @@ use anycodec::engine::{BackendKind, CodecKind};
 fn main() {
     println!("anycodec {} (ABI {})", anycodec::VERSION, anycodec::ANYCODEC_ABI_VERSION);
     println!();
-    println!("{:<8} {:<7} {:<10} {}", "codec", "dir", "backend", "availability");
+    println!("{:<8} {:<7} {:<10} availability", "codec", "dir", "backend");
     println!("{}", "-".repeat(96));
 
     let reports = anycodec::engine::registry().capabilities();

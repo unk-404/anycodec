@@ -10,7 +10,7 @@ checksum = "498a34d3cad5f3b23cc217ab489424ebcfffed186e30ad5ac02624e50df2c2b8"
 
 [[package]]
 name = "anycodec"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "alac",
  "flacenc",

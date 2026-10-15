@@ -1,3 +1,58 @@
+## 0.1.1
+
+Bug-fix release. **The C ABI is unchanged** — `ANYCODEC_ABI_VERSION` is still `1`,
+so a build of 0.1.1 is a drop-in replacement for 0.1.0.
+
+### Fixed
+
+* **`flutter build web` failed for every consumer.** `hook/build.dart` read
+  `input.config.code` without first checking whether code assets were being built,
+  and that property throws when they are not — which is the case for a web build:
+
+  ```
+  Bad state: HookConfig.code should only be accessed when building code assets
+  ```
+
+  The guard is now `if (!input.config.buildCodeAssets) return;`.
+
+* **Nine `unresolved doc reference` warnings**, all from
+  `lib/anycodec_platform.dart`. That library is a `library;` barrel with
+  conditional exports, so the names living in one platform branch cannot be
+  linked from a platform-neutral library. dartdoc reported all nine against it.
+* **`clippy::print_literal` in `rust/examples/capabilities.rs`**, which made
+  `cargo clippy --all-targets -- -D warnings` fail.
+
+### Packaging
+
+* **`LICENSE` was a placeholder** (`TODO: Add your license here.`). It is now the
+  MIT licence, which 0.1.0 shipped without.
+* **`pubspec.yaml`'s description was the template default**
+  (`"A new Dart FFI package project."`) — the text pub.dev renders in search
+  results. It now describes the package.
+* **Added `.pubignore`.** `dart pub publish` falls back to `.gitignore` when it is
+  absent, and `.gitignore` does not exclude `.agents/` (5 GB of agent workspace in
+  this repository) or `rust/target/` (3.3 GB). The published archive is 0.6 MB.
+* **Repaired UTF-8 damage in 23 source files and removed 36 byte-order marks.**
+  A PowerShell `Set-Content -Encoding utf8` round trip had re-encoded every em
+  dash into two CJK code points and prepended a BOM.
+* `rust/Cargo.lock` is now published, so the dependency versions resolved when the
+  cdylib is built do not drift under a consumer's feet.
+
+### Repository
+
+Not shipped to pub.dev (`.github/` and `.agents/` are excluded from the archive),
+but they are why this release is worth having:
+
+* `.github/workflows/ci.yml` — the Rust suite on Linux, Windows and macOS, the Dart
+  binding tests on all three, `cargo check` for the three Android and four Apple
+  targets, a dependency-floor job, and two publish-readiness gates.
+* `.github/scripts/check_archive.dart` — asserts the published archive is complete
+  by resolving every relative import in it, which is the failure that makes a
+  package publish cleanly and compile for nobody.
+* `.github/scripts/validate_workflows.dart` — checks the workflow structure
+  without pushing it.
+* `.agents/scripts/preflight.ps1` — runs the same checks locally, unfiltered.
+
 ## 0.1.0
 
 First release. A cross-platform audio/video codec engine for Dart and Flutter:
