@@ -1,4 +1,4 @@
-﻿//! The `libavcodec` software fallback, loaded at runtime.
+//! The `libavcodec` software fallback, loaded at runtime.
 //!
 //! Nothing here is a build-time dependency: `libavcodec` is resolved with
 //! `libloading` when the first software codec is requested, and every failure to

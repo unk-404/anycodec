@@ -1,4 +1,4 @@
-﻿//! Layer 1 鈥?the memory-safe media model.
+//! Layer 1 — the memory-safe media model.
 //!
 //! Everything in this module is an *owned value*: no raw pointers, no lifetimes,
 //! no `unsafe`. Buffers are immutable and reference-counted, which is what lets
@@ -6,12 +6,12 @@
 //!
 //! The module tree mirrors the media itself:
 //!
-//! * [`codec`] 鈥?*what* is being compressed ([`Codec`], [`VideoCodec`], [`AudioCodec`]).
-//! * [`format`] 鈥?*how* raw data is laid out ([`PixelFormat`], [`SampleFormat`], [`ChannelLayout`]).
-//! * [`buffer`] 鈥?the byte storage everything else is built from ([`Buffer`]).
-//! * [`frame`] 鈥?uncompressed input/output ([`Frame`], [`VideoFrame`], [`AudioFrame`]).
-//! * [`packet`] 鈥?compressed input/output ([`Packet`]).
-//! * [`config`] 鈥?how to configure an encoder or decoder ([`EncoderConfig`], [`DecoderConfig`]).
+//! * [`codec`] — *what* is being compressed ([`Codec`], [`VideoCodec`], [`AudioCodec`]).
+//! * [`format`] — *how* raw data is laid out ([`PixelFormat`], [`SampleFormat`], [`ChannelLayout`]).
+//! * [`buffer`] — the byte storage everything else is built from ([`Buffer`]).
+//! * [`frame`] — uncompressed input/output ([`Frame`], [`VideoFrame`], [`AudioFrame`]).
+//! * [`packet`] — compressed input/output ([`Packet`]).
+//! * [`config`] — how to configure an encoder or decoder ([`EncoderConfig`], [`DecoderConfig`]).
 
 pub mod buffer;
 pub mod codec;

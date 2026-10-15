@@ -1,4 +1,4 @@
-﻿//! GStreamer pipelines for the Linux platform backend.
+//! GStreamer pipelines for the Linux platform backend.
 //!
 //! Both directions use the same shape as every other AnyCodec backend: an
 //! `appsrc` feed edge and an `appsink` drain edge around a short chain of
@@ -9,8 +9,8 @@
 //! ## Why `receive` has a timeout
 //!
 //! [`gst_app::AppSink::pull_sample`] blocks until a buffer exists. A wedged
-//! pipeline 閳?a plugin that failed to load, an element waiting for a clock, a
-//! caps renegotiation that never completes 閳?would then hang the caller's
+//! pipeline — a plugin that failed to load, an element waiting for a clock, a
+//! caps renegotiation that never completes — would then hang the caller's
 //! isolate thread forever with no way to explain why. Every pull here is bounded
 //! by [`PULL_TIMEOUT`]; when it expires `receive` answers `Ok(None)`, which the
 //! [`Encoder`] contract defines as "I need more input". A pipeline error is
@@ -20,8 +20,8 @@
 //!
 //! GStreamer decoders are strict about their input caps. `flacdec` declares
 //! `audio/x-flac, framed=true, rate=[1,655350], channels=[1,8]` and flatly refuses
-//! to negotiate without a `streamheader` 閳?it logs "try adding a flacparse element
-//! upstream" 閳?and `opusdec` declares
+//! to negotiate without a `streamheader` — it logs "try adding a flacparse element
+//! upstream" — and `opusdec` declares
 //! `audio/x-opus, channel-mapping-family=(int)0` for the same reason. Neither
 //! field can be synthesised from what AnyCodec knows, because they describe the
 //! *stream*.
@@ -175,7 +175,7 @@ fn make_appsink(caps: &gst::Caps) -> Result<gst_app::AppSink> {
 // The running pipeline
 // ---------------------------------------------------------------------------
 
-/// A started `appsrc ! 閳? ! appsink` pipeline and its message bus.
+/// A started `appsrc ! —  ! appsink` pipeline and its message bus.
 struct RunningPipeline {
     pipeline: gst::Pipeline,
     appsrc: gst_app::AppSrc,
@@ -333,9 +333,9 @@ fn sample_payload(sample: &gst::Sample) -> Result<Vec<u8>> {
 /// Two shapes exist in GStreamer, and both are exactly what
 /// [`Encoder::extradata`] is defined to return:
 ///
-/// * `codec_data` 閳?a single buffer, used by H.264/H.265 encoders whose
+/// * `codec_data` — a single buffer, used by H.264/H.265 encoders whose
 ///   `stream-format` is `avc`/`hvc1` (the `avcC`/`hvcC` record);
-/// * `streamheader` 閳?the global headers of the audio encoders (Opus, Vorbis,
+/// * `streamheader` — the global headers of the audio encoders (Opus, Vorbis,
 ///   FLAC). GStreamer 1.24 and later publish it as an *array* of buffers;
 ///   earlier releases used a buffer list. Both are read, so this backend works
 ///   against whatever the host ships.
@@ -680,7 +680,7 @@ fn apply_encoder_settings(encoder: &gst::Element, element: &str, config: &Encode
 /// Sets the `bitrate` property in the unit `element` documents.
 ///
 /// Returns `false` when the element is outside
-/// [`elements::bitrate_unit`]'s table 閳?a wrong unit would be silently applied, so
+/// [`elements::bitrate_unit`]'s table — a wrong unit would be silently applied, so
 /// guessing is refused.
 fn apply_bitrate(encoder: &gst::Element, element: &str, bits_per_second: u64) -> bool {
     let Some(unit) = elements::bitrate_unit(element) else {
@@ -726,7 +726,7 @@ impl GstDecoder {
     /// Fails with [`ErrorKind::Unavailable`](crate::error::ErrorKind::Unavailable)
     /// when no candidate element exists, and additionally when the caller
     /// declared length-prefixed H.264/H.265 input and no bitstream parser is
-    /// installed 閳?without one the decoder would be handed a framing it cannot
+    /// installed — without one the decoder would be handed a framing it cannot
     /// read, which must be an error rather than silent corruption.
     pub fn new(config: &DecoderConfig) -> Result<Self> {
         elements::ensure_initialised()?;
@@ -801,7 +801,7 @@ impl GstDecoder {
         // Out-of-band configuration is pushed once, ahead of the first access
         // unit, as a buffer carrying `GST_BUFFER_FLAG_HEADER`. That is the
         // documented way to hand a decoder its stream headers without having to
-        // know each plugin's caps template 閳?`opusdec` wants
+        // know each plugin's caps template — `opusdec` wants
         // `channel-mapping-family` in its caps and `avdec_h265` wants `parsed`,
         // and pinning either here would contradict what the caller's packets are.
         // For H.264/H.265 the record is converted to Annex-B first, because that
@@ -1008,7 +1008,7 @@ mod tests {
     use crate::media::codec::{AudioCodec, VideoCodec};
 
     /// `appsrc` is configured for `gst::Format::Time`, so every timestamp this
-    /// backend pushes is in nanoseconds 閳?including audio, where it is tempting to
+    /// backend pushes is in nanoseconds — including audio, where it is tempting to
     /// pass the sample count instead. `GstAudioEncoder` rejects that outright
     /// ("buffer going too far back in time").
     fn audio_pts(index: u32, frames: u32, sample_rate: u32) -> i64 {
@@ -1081,8 +1081,8 @@ mod tests {
         // needs `opusparse` (gst-plugins-bad): `opusdec` reads its channel mapping
         // out of the caps and refuses to negotiate without it. That is exactly the
         // reason `GstDecoder::new` puts a parser in front of the decoder, so the
-        // decode direction is covered by the FLAC round-trip test 閳?which passes
-        // here 閳?rather than duplicated here against a plugin set that may not
+        // decode direction is covered by the FLAC round-trip test — which passes
+        // here — rather than duplicated here against a plugin set that may not
         // include `opusparse`.
         elements::ensure_initialised().expect("GStreamer must initialise");
         if !elements::element_available("opusenc") {

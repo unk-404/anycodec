@@ -3,7 +3,7 @@
 //! Every decision in this file is made by asking GStreamer, never by a
 //! hard-coded claim. [`element_available`] is
 //! [`gst::ElementFactory::find`], and [`AccelerationFamily::of`] classifies the
-//! element that was *actually chosen* rather than one that merely might exist 鈥?
+//! element that was *actually chosen* rather than one that merely might exist — 
 //! that distinction is the whole point of
 //! [`CodecPath`](crate::engine::CodecPath).
 //!
@@ -73,13 +73,13 @@ pub fn gstreamer_version() -> String {
 /// The acceleration mechanism behind one concrete GStreamer element.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum AccelerationFamily {
-    /// `va*` 鈥?the VA-API plugins (`vah264enc`, `vaav1dec`, `vavp9dec`, ...).
+    /// `va*` — the VA-API plugins (`vah264enc`, `vaav1dec`, `vavp9dec`, ...).
     VaApi,
-    /// `nv*` 鈥?NVIDIA's `nvcodec` plugins.
+    /// `nv*` — NVIDIA's `nvcodec` plugins.
     Nvidia,
-    /// `v4l2*` 鈥?the kernel's V4L2 memory-to-memory video codecs.
+    /// `v4l2*` — the kernel's V4L2 memory-to-memory video codecs.
     V4l2,
-    /// `msdk*` 鈥?Intel Media SDK.
+    /// `msdk*` — Intel Media SDK.
     MediaSdk,
     /// Everything else: a codec that runs on the CPU.
     Software,
@@ -174,7 +174,7 @@ pub fn select_element(
 }
 
 // ---------------------------------------------------------------------------
-// Codec 鈫?GStreamer media types
+// Codec → GStreamer media types
 // ---------------------------------------------------------------------------
 
 /// The GStreamer media type a compressed `codec` stream carries.
@@ -203,8 +203,8 @@ pub const fn media_type(codec: Codec) -> &'static str {
 /// make `lamemp3enc` and `fdkaacenc` negotiate against the same unconstrained
 /// caps and produce a pipeline that can silently be wrong.
 ///
-/// Everything else 鈥?the stream format, the alignment, whether the stream is
-/// `parsed` 鈥?is deliberately left to the elements. An encoder's
+/// Everything else — the stream format, the alignment, whether the stream is
+/// `parsed` — is deliberately left to the elements. An encoder's
 /// [`Encoder::extradata`](crate::engine::Encoder::extradata) is what describes
 /// the framing it chose, and pinning those fields here would contradict it.
 pub fn compressed_caps(codec: Codec) -> Result<gst::Caps> {
@@ -214,8 +214,8 @@ pub fn compressed_caps(codec: Codec) -> Result<gst::Caps> {
 /// Caps for the compressed edge, with the caller's audio geometry pinned when it
 /// was given.
 ///
-/// Rate and channel count are properties of the *compressed* stream as well 鈥?
-/// they are header fields in Opus, FLAC, Vorbis and AAC 鈥?and several GStreamer
+/// Rate and channel count are properties of the *compressed* stream as well — 
+/// they are header fields in Opus, FLAC, Vorbis and AAC — and several GStreamer
 /// decoders will not negotiate without them (`flacdec` declares
 /// `rate`/`channels` in its sink template). Leaving them out and hoping produces
 /// nothing but an opaque `not-negotiated`. Video geometry is never pinned: it is
@@ -245,8 +245,8 @@ pub fn compressed_caps_for(
 
 /// Intersects `caps` with what `element`'s sink pad template accepts.
 ///
-/// GStreamer decoders declare specific sink templates 鈥?`flacdec` requires
-/// `framed=(boolean)true`, `opusdec` requires `channel-mapping-family` 鈥?and a
+/// GStreamer decoders declare specific sink templates — `flacdec` requires
+/// `framed=(boolean)true`, `opusdec` requires `channel-mapping-family` — and a
 /// structure that does not intersect the template is rejected with nothing but an
 /// opaque `not-negotiated` streaming error several layers away. Intersecting
 /// first turns that into a caps the element itself has already agreed to.

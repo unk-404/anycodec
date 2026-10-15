@@ -1,4 +1,4 @@
-﻿//! The VideoToolbox half of the Apple backend.
+//! The VideoToolbox half of the Apple backend.
 //!
 //! VideoToolbox exposes codecs as *sessions*: `VTCompressionSession` for encoding
 //! and `VTDecompressionSession` for decoding. A session is created for one codec
@@ -13,9 +13,9 @@
 //! opaque `refcon`. The refcon here is an `Arc<CompressionSink>`'s raw pointer, and
 //! the callback mutates the sink through its mutex. VideoToolbox may invoke the
 //! callback from its own thread, so the sink must outlive the session:
-//! [`VtEncoder`]'s `Drop` therefore calls `VTCompressionSessionInvalidate` 閳?the
+//! [`VtEncoder`]'s `Drop` therefore calls `VTCompressionSessionInvalidate` — the
 //! documented "deterministic, orderly teardown" that guarantees no further
-//! callback 閳?*before* the `Arc` is released. The same invalidate-then-release
+//! callback — *before* the `Arc` is released. The same invalidate-then-release
 //! ordering holds for [`VtDecoder`].
 //!
 //! ## Hardware acceleration
@@ -40,7 +40,7 @@
 //! bindings but are deliberately **not** called. They add the professional codecs
 //! (ProRes and friends) to the process's codec set; AnyCodec routes none of them,
 //! so calling them would mutate global codec state on behalf of the application for
-//! no benefit 閳?and [`register`] must stay side-effect free.
+//! no benefit — and [`register`] must stay side-effect free.
 
 use std::collections::VecDeque;
 use std::ffi::c_void;
@@ -117,7 +117,7 @@ pub struct VideoEncoderInfo {
 ///
 /// `VTCopyVideoEncoderList` is the documented enumeration. It costs a framework
 /// round trip, so it is only reached from [`available`], the probes and
-/// [`probe_devices`] 閳?never from a per-frame path.
+/// [`probe_devices`] — never from a per-frame path.
 pub fn encoder_list() -> Result<Vec<VideoEncoderInfo>> {
     let mut list: *const CFArray = std::ptr::null();
     let Some(out) = NonNull::new(&mut list) else {
@@ -1035,7 +1035,7 @@ impl VtDecoder {
     ///
     /// H.264 and HEVC are configured from the parameter sets in `config.extradata`
     /// when there are any, and from the codec type plus the caller's size hints
-    /// otherwise 閳?which is what a stream carrying its parameter sets in band needs.
+    /// otherwise — which is what a stream carrying its parameter sets in band needs.
     /// VP9, AV1 and VVC always take the second route, because their configuration is
     /// in the bitstream by construction.
     pub fn new(config: &DecoderConfig) -> Result<Self> {

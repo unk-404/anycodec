@@ -9,8 +9,8 @@
 //!
 //! [`pixel_format_type`] maps every [`PixelFormat`] that CoreVideo can carry
 //! without reinterpreting the bytes. `Nv21` is the one layout CoreVideo has no
-//! equivalent for 鈥?`kCVPixelFormatType_420YpCbCr8BiPlanarFullRange` also has its
-//! chroma components in Cb,Cr order 鈥?so mapping `Nv21` onto it would silently
+//! equivalent for — `kCVPixelFormatType_420YpCbCr8BiPlanarFullRange` also has its
+//! chroma components in Cb,Cr order — so mapping `Nv21` onto it would silently
 //! swap U and V. It maps to `None` and the session refuses it instead.
 //!
 //! `P010` *does* map, onto the two-plane
@@ -75,8 +75,8 @@ pub fn pixel_format_type(format: PixelFormat) -> Option<u32> {
 /// The AnyCodec layout a `CVPixelBuffer` of `pixel_format_type` is read as.
 ///
 /// The inverse of [`pixel_format_type`] on every value that function produces.
-/// Every other `kCVPixelFormatType_*` 鈥?the full-range variants, the 4:2:2
-/// biplanar variants, the packed 10-bit ones, ... 鈥?returns `None`, and the
+/// Every other `kCVPixelFormatType_*` — the full-range variants, the 4:2:2
+/// biplanar variants, the packed 10-bit ones, ... — returns `None`, and the
 /// session then fails with a message naming the code rather than guessing at a
 /// colour range or a chroma order.
 #[must_use]
@@ -108,7 +108,7 @@ pub fn is_supported(format: PixelFormat) -> bool {
 // Filling the buffers VideoToolbox takes
 // ---------------------------------------------------------------------------
 
-/// Allocates an empty `CVPixelBuffer` of `width` 脳 `height` in `format`.
+/// Allocates an empty `CVPixelBuffer` of `width` × `height` in `format`.
 ///
 /// The buffer is allocated by CoreVideo and handed straight to the encoder. No
 /// `CVPixelBufferPool` is used, so every frame pays one allocation; that is
@@ -943,7 +943,7 @@ pub fn length_prefixed_to_annex_b(payload: &[u8]) -> Vec<u8> {
 /// Converts a caller's packet into the Annex-B payload a decoder wants.
 ///
 /// Packets that already use start codes are passed through; length-prefixed ones
-/// are converted. `HEADER` and `EOS` packets never reach here 鈥?the sessions
+/// are converted. `HEADER` and `EOS` packets never reach here — the sessions
 /// handle those themselves.
 pub fn packet_payload(packet: &Packet) -> Result<Vec<u8>> {
     let bytes = packet.data.as_slice();

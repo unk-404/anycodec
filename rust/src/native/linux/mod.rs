@@ -10,7 +10,7 @@
 //!
 //! | File | Responsibility |
 //! |------|----------------|
-//! | `mod.rs` (this file) | The required surface, the codec鈫抏lement tables, registration and device probing. |
+//! | `mod.rs` (this file) | The required surface, the codec→ element tables, registration and device probing. |
 //! | [`elements`] | Element selection, acceleration classification, caps mapping. |
 //! | [`pipeline`] | The [`Encoder`](crate::engine::Encoder) / [`Decoder`](crate::engine::Decoder) implementations over a `gst::Pipeline`. |
 //!
@@ -18,11 +18,11 @@
 //!
 //! | Codec | Candidates, best first |
 //! |-------|-----------------------|
-//! | H.264 | VA-API 鈫?NVENC 鈫?V4L2 鈫?Media SDK 鈫?`openh264enc` 鈫?`x264enc` |
-//! | H.265 | VA-API 鈫?NVENC 鈫?V4L2 鈫?Media SDK 鈫?`x265enc` |
+//! | H.264 | VA-API → NVENC → V4L2 → Media SDK → `openh264enc` → `x264enc` |
+//! | H.265 | VA-API → NVENC → V4L2 → Media SDK → `x265enc` |
 //! | H.266 | `vvencenc` / `vvdec` only; no shipping Linux encoder is hardware accelerated |
-//! | VP8, VP9 | VA-API 鈫?V4L2 鈫?Media SDK 鈫?`vp8enc`/`vp9enc` |
-//! | AV1 | VA-API 鈫?NV 鈫?Media SDK 鈫?`av1enc`/`svtav1enc`, `avdec_av1` |
+//! | VP8, VP9 | VA-API → V4L2 → Media SDK → `vp8enc`/`vp9enc` |
+//! | AV1 | VA-API → NV → Media SDK → `av1enc`/`svtav1enc`, `avdec_av1` |
 //! | MP3, AAC | `lamemp3enc`, `fdkaacenc`/`avenc_aac`/`faac` |
 //! | Vorbis, Opus, FLAC, ALAC | `vorbisenc`, `opusenc`, `flacenc`, `avenc_alac` |
 //!
@@ -76,7 +76,7 @@ pub fn available() -> bool {
 ///
 /// One record per acceleration family that is *actually reachable*: a family is
 /// reported only when at least one of its elements won the selection for some
-/// codec and direction. The list is honest and therefore **possibly empty** 鈥?a
+/// codec and direction. The list is honest and therefore **possibly empty** — a
 /// GStreamer installation with no plugins reports nothing, and one whose only
 /// video encoders are software reports a single software record.
 ///
@@ -94,7 +94,7 @@ pub fn probe_devices() -> Vec<HwDeviceInfo> {
 }
 
 // ---------------------------------------------------------------------------
-// Codec 鈫?element tables
+// Codec → element tables
 // ---------------------------------------------------------------------------
 
 /// Encoder element candidates for `codec`, best first.
@@ -159,7 +159,7 @@ fn decoder_candidates(codec: Codec) -> &'static [&'static str] {
 ///
 /// Most GStreamer decoders read their global headers out of the *caps* and refuse
 /// to negotiate without them; the parser is what reads those headers out of the
-/// byte stream and republishes them. GStreamer names the fix itself 鈥?`flacdec`
+/// byte stream and republishes them. GStreamer names the fix itself — `flacdec`
 /// logs "no 'streamheader' field in input caps, try adding a flacparse element
 /// upstream".
 ///
@@ -196,8 +196,8 @@ fn has_framing_ambiguity(codec: Codec) -> bool {
 
 /// The [`CodecPath`] a live session reports.
 ///
-/// The hardware flag comes from the element that was *actually chosen* 鈥?never
-/// from what the table hopes is installed 鈥?and the detail string names every
+/// The hardware flag comes from the element that was *actually chosen* — never
+/// from what the table hopes is installed — and the detail string names every
 /// element in the chain, including `parser` when one was inserted.
 pub(crate) fn codec_path(
     codec: Codec,
@@ -229,7 +229,7 @@ pub(crate) fn codec_path(
 
 /// The probe every registration uses: is there an element we could build?
 ///
-/// Cheap and side-effect free after the first call 鈥?it reads the element
+/// Cheap and side-effect free after the first call — it reads the element
 /// registry `gst::init` already loaded and never instantiates anything.
 fn probe_codec(codec: Codec, kind: CodecKind) -> BackendAvailability {
     if let Err(error) = elements::ensure_initialised() {
@@ -264,7 +264,7 @@ fn register_with(registry: &mut Registry, is_available: &dyn Fn(&str) -> bool) {
             };
             // `PLATFORM_FRAMEWORK`, not `DYNAMIC_FRAMEWORK`: `gstreamer-rs` links
             // `libgstreamer-1.0` at build time, and GStreamer is a platform
-            // framework that may or may not use hardware 鈥?the element choice,
+            // framework that may or may not use hardware — the element choice,
             // reported through `CodecPath`, is what decides.
             registry.register_encoder(
                 codec,

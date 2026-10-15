@@ -1,4 +1,4 @@
-﻿//! Prints the codec capability report for the machine this runs on.
+//! Prints the codec capability report for the machine this runs on.
 //!
 //! ```text
 //! cargo run --example capabilities

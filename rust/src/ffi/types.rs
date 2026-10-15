@@ -1,4 +1,4 @@
-﻿//! The `#[repr(C)]` vocabulary of the C ABI.
+//! The `#[repr(C)]` vocabulary of the C ABI.
 //!
 //! Everything here is a plain-old-data struct with fixed-size fields. Enums are
 //! represented as `u32` plus `ANYCODEC_*` constants, so the ABI never depends on

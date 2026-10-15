@@ -4,8 +4,8 @@
 /// (`@ffi.DefaultAsset('package:anycodec/src/bindings/anycodec_bindings_generated.dart')`,
 /// produced by `hook/build.dart`) resolves at all, that the library and the
 /// Dart bindings agree on the ABI revision, and that calling every exported
-/// function with the most hostile arguments available from Dart 鈥?NULL pointers
-/// and zero 鈥?produces a documented result instead of a crash.
+/// function with the most hostile arguments available from Dart — NULL pointers
+/// and zero — produces a documented result instead of a crash.
 ///
 /// A missing symbol would fail at the *first* call in this file, because
 /// `dart:ffi` resolves `@Native` externals lazily and throws

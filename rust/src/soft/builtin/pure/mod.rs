@@ -1,4 +1,4 @@
-﻿//! Tier 1b of the software fallback: **one real pure-Rust codec per family**.
+//! Tier 1b of the software fallback: **one real pure-Rust codec per family**.
 //!
 //! Where [`super::symphonia_dec`] is a single crate's worth of audio decoders
 //! and [`super::flac_enc`] is a single encoder, this module is the full
@@ -6,7 +6,7 @@
 //! upstream crate that actually implements the format.
 //!
 //! Nothing here needs a C toolchain, cmake or nasm, so the whole tier is part of
-//! every build on every target 鈥?there are no cargo features to switch it on
+//! every build on every target — there are no cargo features to switch it on
 //! (see the note in `Cargo.toml`). Every codec registers at
 //! [`PRIORITY_BUILTIN`](super::super::PRIORITY_BUILTIN), below every platform
 //! framework.
@@ -21,21 +21,21 @@
 //!
 //! | Codec | Decode | Encode |
 //! |-------|--------|--------|
-//! | H.264 | 鈥?| 鈥?|
-//! | H.265 | `rusty_h265` | 鈥?|
-//! | H.266 | 鈥?| 鈥?|
-//! | VP8 | 鈥?| 鈥?|
+//! | H.264 | — | — |
+//! | H.265 | `rusty_h265` | — |
+//! | H.266 | — | — |
+//! | VP8 | — | — |
 //! | VP9 | `rusty_vp9` | `rusty_vp9` |
-//! | AV1 | 鈥?| 鈥?|
+//! | AV1 | — | — |
 //! | MP3 | `rusty_mp3` | `rusty_mp3` |
 //! | AAC | `rusty_aac` | `rusty_aac` |
-//! | Vorbis | 鈥?| 鈥?|
+//! | Vorbis | — | — |
 //! | Opus | `opus-pure` | `opus-pure` |
 //! | FLAC | `rusty_flac` | `rusty_flac` |
-//! | ALAC | `alac` | 鈥?|
+//! | ALAC | `alac` | — |
 //!
-//! H.264 has **no** entry in either direction on purpose. `rust_h264` 鈥?the only
-//! pure-Rust H.264 decoder in the dependency set 鈥?builds its decoder, decoded
+//! H.264 has **no** entry in either direction on purpose. `rust_h264` — the only
+//! pure-Rust H.264 decoder in the dependency set — builds its decoder, decoded
 //! picture buffer, motion-vector predictor and slice contexts on `std::rc::Rc`,
 //! so `rust_h264::decoder::Decoder` is `!Send`. [`crate::engine::Decoder`] is
 //! `Send` (registry-created decoders are handed between threads and isolates),
@@ -51,7 +51,7 @@
 //! codecs and the capability report is allowed to name more than one software
 //! decoder for a codec. [`super::register`] registers this tier **first**, so
 //! the registry tries these codecs before the symphonia ones and `flacenc`
-//! remains exactly what it was already documented to be 鈥?the fallback FLAC
+//! remains exactly what it was already documented to be — the fallback FLAC
 //! encoder.
 //!
 //! # Layouts
@@ -135,7 +135,7 @@ impl PureCodec {
 
 /// The codec table: one entry per codec [`Codec::ALL`] routes, in that order.
 ///
-/// A `None` is a statement that this tier genuinely cannot do it 鈥?never a
+/// A `None` is a statement that this tier genuinely cannot do it — never a
 /// placeholder. Vorbis stays with [`super::symphonia_dec`]; H.264, H.266, VP8
 /// and AV1 have no pure-Rust codec in this build at all.
 pub(crate) const CODECS: [PureCodec; 12] = [
@@ -249,7 +249,7 @@ pub fn register(registry: &mut Registry) {
 ///
 /// The registry always probes an entry with the codec it was registered for, so
 /// this is a guard against a future caller asking the wrong question rather than
-/// a behaviour a caller can currently observe 鈥?which is exactly why it is worth
+/// a behaviour a caller can currently observe — which is exactly why it is worth
 /// having.
 pub(crate) fn probe(
     codec: Codec,
@@ -689,7 +689,7 @@ mod tests {
     }
 
     /// With the whole built-in tier registered, the pure codecs are the ones the
-    /// registry actually picks 鈥?the older implementations really are fallbacks.
+    /// registry actually picks — the older implementations really are fallbacks.
     #[test]
     fn the_pure_codecs_win_over_the_older_built_ins() {
         let mut registry = Registry::new();

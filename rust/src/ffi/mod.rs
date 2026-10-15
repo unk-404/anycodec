@@ -1,4 +1,4 @@
-//! Layer 4 鈥?the C ABI.
+//! Layer 4 — the C ABI.
 //!
 //! This is the only module in the crate that exports `extern "C"`, and it is the
 //! only module that owns raw pointers. Its whole job is to convert between the

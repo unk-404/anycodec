@@ -1,4 +1,4 @@
-﻿//! Layer 3a 鈥?platform media frameworks.
+//! Layer 3a — platform media frameworks.
 //!
 //! One submodule per platform API, and one API per submodule. No `cfg` soup
 //! inside a backend: each platform module compiles to a real implementation on
@@ -23,7 +23,7 @@
 //! Every symbol in this module is declared and driven by AnyCodec itself: the
 //! `extern` blocks, the COM vtables, the NDK calls and the `dlopen` resolver all
 //! live in this crate. In particular this project does **not** depend on
-//! `oxideav-videotoolbox` (or any other OxideAV crate) for Apple support 鈥?the
+//! `oxideav-videotoolbox` (or any other OxideAV crate) for Apple support — the
 //! Apple backends below are AnyCodec's own.
 
 /// Bitstream helpers shared by the platform backends.

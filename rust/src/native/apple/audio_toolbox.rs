@@ -1,4 +1,4 @@
-﻿//! The AudioToolbox half of the Apple backend.
+//! The AudioToolbox half of the Apple backend.
 //!
 //! AudioToolbox converts audio with an `AudioConverter`: a pair of
 //! `AudioStreamBasicDescription`s in, a session out, and
@@ -654,7 +654,7 @@ pub fn probe_component(codec: Codec, kind: CodecKind) -> BackendAvailability {
 
 /// Reports the AudioToolbox converter set.
 ///
-/// AudioToolbox has no hardware engine 鈥擿AudioConverter` is CPU DSP 鈥攕o the record
+/// AudioToolbox has no hardware engine — `AudioConverter` is CPU DSP — to the record
 /// is named as such and every `HwCodecSupport` entry carries `max_bit_depth == 0`
 /// ("unknown") rather than a bit depth that was never observed. It is reported at
 /// all because `HwDeviceInfo` is this crate's machine-capability report, exactly as

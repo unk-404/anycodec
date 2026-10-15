@@ -1,4 +1,4 @@
-﻿//! Capability and hardware-device reporting.
+//! Capability and hardware-device reporting.
 
 use std::os::raw::{c_char, c_uchar};
 

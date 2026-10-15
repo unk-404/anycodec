@@ -1,4 +1,4 @@
-﻿//! Compressed packets.
+//! Compressed packets.
 
 use crate::media::buffer::Buffer;
 use crate::media::codec::Codec;

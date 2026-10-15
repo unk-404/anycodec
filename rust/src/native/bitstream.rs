@@ -1,4 +1,4 @@
-﻿//! Bitstream helpers shared by the platform backends.
+//! Bitstream helpers shared by the platform backends.
 //!
 //! Every native codec API wants parameter sets in a different shape:
 //!

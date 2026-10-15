@@ -1,4 +1,4 @@
-﻿//! A real, complete codec used to exercise the whole pipeline without a
+//! A real, complete codec used to exercise the whole pipeline without a
 //! production codec: it stores each frame verbatim in a length-prefixed packet
 //! and reconstructs it on the way back.
 //!

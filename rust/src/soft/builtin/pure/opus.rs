@@ -1,9 +1,9 @@
-﻿//! Pure-Rust **Opus** (RFC 6716) decode *and* encode, on [`opus_pure`].
+//! Pure-Rust **Opus** (RFC 6716) decode *and* encode, on [`opus_pure`].
 //!
 //! Opus needs no `extradata` in either direction: each packet starts with a
 //! table-of-contents byte that carries its mode, bandwidth, frame duration and
 //! channel count, so the framing is self-describing. An `OpusHead` supplied as
-//! `extradata` is therefore ignored 鈥?it describes the container's pre-skip and
+//! `extradata` is therefore ignored — it describes the container's pre-skip and
 //! channel mapping, which only an Ogg/WebM muxer and its `Trim` need.
 //!
 //! Opus has its own sample-rate ladder (8, 12, 16, 24 and 48 kHz) and its own

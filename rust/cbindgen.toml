@@ -1,4 +1,4 @@
-﻿# cbindgen configuration for the AnyCodec C ABI.
+# cbindgen configuration for the AnyCodec C ABI.
 #
 # Regenerate the header with:
 #   cd rust

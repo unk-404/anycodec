@@ -1,4 +1,4 @@
-﻿//! A pure-Rust software **FLAC encoder**.
+//! A pure-Rust software **FLAC encoder**.
 //!
 //! This is what makes the software *encode* path concrete: it needs no FFmpeg,
 //! no C toolchain and no platform framework, and its output round-trips through
@@ -12,7 +12,7 @@
 //! the whole input has been seen. So this encoder buffers samples and produces,
 //! on [`Encoder::flush`], exactly two packets:
 //!
-//! 1. a `HEADER` packet carrying the 34-byte `STREAMINFO` block body 鈥?this is
+//! 1. a `HEADER` packet carrying the 34-byte `STREAMINFO` block body — this is
 //!    the value to feed back in as `DecoderConfig::extradata`; and
 //! 2. one packet carrying every encoded frame.
 //!

@@ -1,8 +1,8 @@
-﻿//! Pure-Rust **H.265/HEVC** decoding, on [`rusty_h265`].
+//! Pure-Rust **H.265/HEVC** decoding, on [`rusty_h265`].
 //!
 //! ## Input
 //!
-//! HEVC is carried as **Annex-B** (`00 00 01` start codes) 鈥?the shape of an
+//! HEVC is carried as **Annex-B** (`00 00 01` start codes) — the shape of an
 //! elementary stream, RTP payloads and a transport stream. That is the only
 //! shape this decoder accepts, and a packet that does not contain a start code
 //! is rejected with a message saying so rather than being silently ignored.
@@ -14,7 +14,7 @@
 //! Annex-B blob, and otherwise from the stream itself: VPS/SPS/PPS are ordinary
 //! NAL units, so a stream that carries them in band needs no `extradata`.
 //!
-//! `rusty_h265` covers Main, Main 10 and Main Still Picture 鈥?4:2:0 at 8 and 10
+//! `rusty_h265` covers Main, Main 10 and Main Still Picture — 4:2:0 at 8 and 10
 //! bits. Range extensions, screen-content coding and layered profiles are
 //! refused by the crate itself with a named `Error::Unsupported`, which this
 //! module surfaces as [`crate::error::ErrorKind::Unsupported`].
@@ -23,7 +23,7 @@
 //!
 //! * [`VideoFrame::keyframe`] is **always `false`**: the crate reports pictures
 //!   in output order and does not expose IRAP boundaries through its frame type.
-//!   `false` is the safe direction 鈥?it never lets a caller skip a picture it
+//!   `false` is the safe direction — it never lets a caller skip a picture it
 //!   still needs.
 //! * [`VideoFrame::pts`] is the `pts` of the packet that completed the access
 //!   unit when one was supplied, and an output ordinal otherwise.
@@ -119,7 +119,7 @@ impl H265Decoder {
         for set in &sets {
             // `annex_b_parameter_sets` prefixes an `hvcC`'s NAL units with a
             // start code but returns the units of an Annex-B blob with the code
-            // stripped, and `push_annexb` only understands start codes 鈥?so
+            // stripped, and `push_annexb` only understands start codes — so
             // normalise here instead of depending on that difference.
             let unit = with_start_code(set);
             let outcome = self.inner.push_annexb(&unit, None);
@@ -391,7 +391,7 @@ mod tests {
     #[test]
     fn an_annex_b_parameter_set_blob_is_accepted_as_configuration() {
         // A one-byte VPS: structurally a NAL unit, semantically empty, so the
-        // *decode* is rejected 鈥?this checks the shape is recognised at all.
+        // *decode* is rejected — this checks the shape is recognised at all.
         let blob = [0u8, 0, 0, 1, 0x40, 0x01];
         let config = decoder_config().with_extradata(Buffer::from_slice(&blob));
         let error = H265Decoder::new(&config).unwrap_err();

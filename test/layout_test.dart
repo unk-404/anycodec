@@ -1,7 +1,7 @@
 /// ABI layout tests: struct sizes, field offsets and constant values.
 ///
 /// This is the test that catches an ABI break. `dart:ffi` will happily write a
-/// `u32` into the wrong place 鈥?or read eight bytes where Rust wrote four 鈥?and
+/// `u32` into the wrong place — or read eight bytes where Rust wrote four — and
 /// the result is memory corruption a long way from the cause, so the layout the
 /// Dart side believes in is pinned here against the numbers
 /// `rust/include/anycodec.h` implies for the host.
@@ -19,7 +19,7 @@
 ///
 /// `dart:ffi` in Dart 3.13 has neither: they were removed (only `sizeOf<T>()`
 /// remains, and it requires a compile-time-constant type argument). Offsets are
-/// therefore verified the stronger way 鈥?by writing a sentinel value through the
+/// therefore verified the stronger way — by writing a sentinel value through the
 /// generated field and locating its exact bytes in the raw struct.
 library;
 

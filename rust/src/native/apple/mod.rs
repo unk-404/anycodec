@@ -1,4 +1,4 @@
-﻿//! Apple platform backend.
+//! Apple platform backend.
 //!
 //! Two frameworks, one module per framework, exactly as [`crate::native`]'s
 //! contract requires:
@@ -8,7 +8,7 @@
 //! | VideoToolbox | [`video_toolbox`] | `VTCompressionSession` / `VTDecompressionSession` |
 //! | AudioToolbox | [`audio_toolbox`] | `AudioConverter` |
 //!
-//! Everything the two share lives here: the `Codec` 鈫?framework-identifier
+//! Everything the two share lives here: the `Codec` → framework-identifier
 //! tables, the `OSStatus` decoder, and the `CMTime` timebase.
 //!
 //! ## What this backend is built on
@@ -25,7 +25,7 @@
 //!   encoder. The only truthful answer is the one the live session gives:
 //!   [`video_toolbox`] reads
 //!   `kVTCompressionPropertyKey_UsingHardwareAcceleratedVideoEncoder` back off
-//!   the session and reports exactly what it says 鈥?including "the encoder did
+//!   the session and reports exactly what it says — including "the encoder did
 //!   not answer", which is reported as `false` with the reason in
 //!   `CodecPath::detail`.
 //! * **Decoding.** There is no per-session equivalent, so the system-wide
@@ -38,9 +38,9 @@
 //! `Packet::pts` / `Frame::pts` are raw integers in a caller-chosen timebase,
 //! while CoreMedia wants a rational [`CMTime`]. Every `CMTime` this backend
 //! creates uses [`TIME_SCALE`] as its timescale, so the mapping
-//! `milliseconds 鈫?CMTime 鈫?milliseconds` round-trips exactly. VideoToolbox
+//! `milliseconds → CMTime → milliseconds` round-trips exactly. VideoToolbox
 //! hands the presentation timestamp back on the decoded sample buffer, so an
-//! invertible mapping is not a nicety 鈥?it is how a decoded frame keeps its
+//! invertible mapping is not a nicety — it is how a decoded frame keeps its
 //! timestamp.
 //!
 //! [`CMTime`]: objc2_core_media::CMTime

@@ -1,4 +1,4 @@
-﻿//! Windows platform backend.
+//! Windows platform backend.
 //!
 //! Drives Media Foundation, the media framework Windows ships with: H.264
 //! decoding is inbox everywhere, HEVC/VP9/AV1 arrive with the optional "Video

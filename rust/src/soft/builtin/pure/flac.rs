@@ -1,4 +1,4 @@
-﻿//! Pure-Rust **FLAC** (Xiph lossless) decode *and* encode, on [`rusty_flac`].
+//! Pure-Rust **FLAC** (Xiph lossless) decode *and* encode, on [`rusty_flac`].
 //!
 //! ## Decode
 //!
@@ -7,7 +7,7 @@
 //! `rusty_flac`'s decoder wants a complete stream in memory. So this decoder:
 //!
 //! 1. builds the stream header from [`DecoderConfig::extradata`], which must be
-//!    the **34-byte `STREAMINFO` body** 鈥?the same value
+//!    the **34-byte `STREAMINFO` body** — the same value
 //!    [`super::super::flac_enc::FlacEncoder`] exposes; and
 //! 2. appends each pushed packet's bytes to a growing buffer and decodes every
 //!    frame that is complete so far.
@@ -16,14 +16,14 @@
 //! truncated tail is indistinguishable from "more data is coming", so the
 //! decoder waits. The cost is that this decoder re-decodes the buffered frames
 //! whenever it has been drained and new bytes have arrived, which is linear in
-//! the *buffer* rather than in the packet 鈥?acceptable for the container-shaped
+//! the *buffer* rather than in the packet — acceptable for the container-shaped
 //! input this tier serves, and the honest reason a caller streaming one frame
 //! per packet should prefer [`super::super::symphonia_dec`].
 //!
 //! ## Encode
 //!
 //! Lossless, like the `flacenc` encoder it sits in front of: the encoder buffers
-//! and then produces exactly two packets on [`Encoder::flush`] 鈥?a `HEADER`
+//! and then produces exactly two packets on [`Encoder::flush`] — a `HEADER`
 //! packet carrying the 34-byte `STREAMINFO` body, and one packet carrying every
 //! encoded frame. [`Encoder::extradata`] returns the same `STREAMINFO`, so a
 //! caller that forgets to keep packet 1 can still store the configuration.

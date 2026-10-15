@@ -1,4 +1,4 @@
-﻿//! The MediaCodec half of the Android backend.
+//! The MediaCodec half of the Android backend.
 //!
 //! Everything here goes through `ndk::media::MediaCodec`, the NDK crate's safe
 //! wrapper, so there is no hand-written NDK FFI. The logic that *is* ours is:

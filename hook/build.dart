@@ -1,4 +1,4 @@
-﻿// Build hook for the AnyCodec native library.
+// Build hook for the AnyCodec native library.
 //
 // This file must be self-contained: `hooks_runner` only ever looks at
 // `hook/build.dart` (and `hook/link.dart`), so there is no `hook/src/`.
@@ -22,8 +22,8 @@
 //   * `rustup` cannot see a relocated `CARGO_HOME`/`RUSTUP_HOME`, so it would
 //     download a second, several-gigabyte copy of the pinned toolchain into
 //     `%USERPROFILE%\.rustup`;
-//   * `rustc` cannot see `INCLUDE`/`LIB`, so linking fails 閳?even when the
-//     developer is correctly set up 閳?with the famously unhelpful
+//   * `rustc` cannot see `INCLUDE`/`LIB`, so linking fails — even when the
+//     developer is correctly set up — with the famously unhelpful
 //     "linker `link.exe` not found".
 //
 // `Platform.environment` is an unmodifiable snapshot and a build hook cannot set
@@ -35,8 +35,8 @@
 // Crucially this hook **does not guess**. It never invents a toolchain location:
 // every value comes from the inherited environment, from an explicit
 // `hooks: user_defines:` override, or from the value the developer registered
-// for their own Windows profile. Carrying what the machine already has 閳?and
-// doing nothing surprising on a machine that has nothing 閳?is what makes a hook
+// for their own Windows profile. Carrying what the machine already has — and
+// doing nothing surprising on a machine that has nothing — is what makes a hook
 // publishable.
 //
 // ## Overrides
@@ -134,7 +134,8 @@ Future<void> main(List<String> args) async {
       ..._privateTempEnvironment(input, logger),
     };
 
-    if (codeConfig.targetOS == OS.windows && !_msvcToolchainIsAvailable(environment)) {
+    if (codeConfig.targetOS == OS.windows &&
+        !_msvcToolchainIsAvailable(environment)) {
       _warnAboutMissingMsvcToolchain(logger);
     }
 
@@ -246,7 +247,9 @@ Future<Map<String, String>> _collectPropagatedEnvironment(
 ///    lower-cased variable name (`cargo_home`, `include`, `lib`, ...);
 /// 3. the value registered for the current user's Windows profile
 ///    (`HKCU\Environment`), which is where a developer's own setup lives.
-Map<String, String> _resolveInheritedEnvironment(Map<String, Object?> overrides) {
+Map<String, String> _resolveInheritedEnvironment(
+  Map<String, Object?> overrides,
+) {
   final resolved = <String, String>{};
   for (final name in _propagatedVariables) {
     if ((Platform.environment[name] ?? '').isNotEmpty) {
@@ -273,7 +276,10 @@ Map<String, String> _resolveInheritedEnvironment(Map<String, Object?> overrides)
 /// enough to be useful, so a partially-broken list is propagated rather than
 /// silently dropped.
 bool _isUsableValue(String name, String value) {
-  final entries = value.split(';').where((entry) => entry.trim().isNotEmpty).toList();
+  final entries = value
+      .split(';')
+      .where((entry) => entry.trim().isNotEmpty)
+      .toList();
   if (entries.isEmpty) {
     return false;
   }
@@ -291,7 +297,10 @@ bool _isUsableValue(String name, String value) {
 ///
 /// Returns the child's exit code, or `null` when the hook could not be
 /// re-executed, in which case the caller carries on with what it has.
-Future<int?> _reexecWithEnvironment(List<String> args, Map<String, String> environment) async {
+Future<int?> _reexecWithEnvironment(
+  List<String> args,
+  Map<String, String> environment,
+) async {
   final script = Platform.script.toFilePath();
   if (script.isEmpty) {
     return null;
@@ -321,7 +330,12 @@ String? _registeredUserEnvironmentVariable(String name) {
     return null;
   }
   try {
-    final result = Process.runSync('reg', ['query', r'HKCU\Environment', '/v', name]);
+    final result = Process.runSync('reg', [
+      'query',
+      r'HKCU\Environment',
+      '/v',
+      name,
+    ]);
     if (result.exitCode != 0) {
       return null;
     }
@@ -373,12 +387,19 @@ Future<Map<String, String>> _devShellEnvironment(Logger logger) async {
   if (installation == null) {
     return const {};
   }
-  final module = '$installation\\Common7\\Tools\\Microsoft.VisualStudio.DevShell.dll';
+  final module =
+      '$installation\\Common7\\Tools\\Microsoft.VisualStudio.DevShell.dll';
   if (!File(module).existsSync()) {
     logger.fine('no DevShell module at $module');
     return const {};
   }
-  final instanceId = _vswhere(['-latest', '-products', '*', '-property', 'instanceId']);
+  final instanceId = _vswhere([
+    '-latest',
+    '-products',
+    '*',
+    '-property',
+    'instanceId',
+  ]);
   if (instanceId == null) {
     logger.fine('vswhere did not report an instance id');
     return const {};
@@ -391,7 +412,9 @@ Future<Map<String, String>> _devShellEnvironment(Logger logger) async {
       "Enter-VsDevShell $instanceId -SkipAutomaticLocation "
       "-DevCmdArguments '-arch=x64 -host_arch=x64'",
     )
-    ..writeln(r'Get-ChildItem Env: | ForEach-Object { "$($_.Name)=$($_.Value)" }');
+    ..writeln(
+      r'Get-ChildItem Env: | ForEach-Object { "$($_.Name)=$($_.Value)" }',
+    );
 
   try {
     final result = await Process.run('powershell.exe', [
@@ -437,7 +460,8 @@ Future<Map<String, String>> _devShellEnvironment(Logger logger) async {
 /// Deliberately does **not** pass `-requires`: the component identifiers differ
 /// between Visual Studio generations, and a filter that does not match turns a
 /// perfectly good installation into "not found".
-String? _visualStudioInstallation() => _vswhere(['-latest', '-products', '*', '-property', 'installationPath']);
+String? _visualStudioInstallation() =>
+    _vswhere(['-latest', '-products', '*', '-property', 'installationPath']);
 
 /// Runs `vswhere` and returns its first non-empty output line.
 ///
@@ -483,8 +507,12 @@ List<String> _vswhereCandidates() {
 
   final systemDrive = Platform.environment['SYSTEMDRIVE'] ?? 'C:';
   candidates
-    ..add('$systemDrive\\Program Files (x86)\\Microsoft Visual Studio\\Installer\\vswhere.exe')
-    ..add('$systemDrive\\Program Files\\Microsoft Visual Studio\\Installer\\vswhere.exe');
+    ..add(
+      '$systemDrive\\Program Files (x86)\\Microsoft Visual Studio\\Installer\\vswhere.exe',
+    )
+    ..add(
+      '$systemDrive\\Program Files\\Microsoft Visual Studio\\Installer\\vswhere.exe',
+    );
 
   // Anything on PATH (some CI images put it there).
   for (final entry in (Platform.environment['PATH'] ?? '').split(';')) {
@@ -495,7 +523,9 @@ List<String> _vswhereCandidates() {
 
   final programData = Platform.environment['PROGRAMDATA'];
   if (programData != null && programData.isNotEmpty) {
-    candidates.add('$programData\\Microsoft\\VisualStudio\\Installer\\vswhere.exe');
+    candidates.add(
+      '$programData\\Microsoft\\VisualStudio\\Installer\\vswhere.exe',
+    );
   }
 
   return candidates;
@@ -561,9 +591,11 @@ void _warnAboutMissingMsvcToolchain(Logger logger) {
 Map<String, String> _privateTempEnvironment(BuildInput input, Logger logger) {
   try {
     final base = input.outputDirectory.toFilePath();
-    final separator =
-        base.endsWith('/') || base.endsWith(r'\') ? '' : Platform.pathSeparator;
-    final directory = Directory('$base${separator}tmp')..createSync(recursive: true);
+    final separator = base.endsWith('/') || base.endsWith(r'\')
+        ? ''
+        : Platform.pathSeparator;
+    final directory = Directory('$base${separator}tmp')
+      ..createSync(recursive: true);
     logger.fine('using ${directory.path} as TMP/TEMP for the Rust build');
     return {'TMP': directory.path, 'TEMP': directory.path};
   } on FileSystemException catch (error) {

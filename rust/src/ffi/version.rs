@@ -1,4 +1,4 @@
-﻿//! Version and ABI identification.
+//! Version and ABI identification.
 
 use std::ffi::CStr;
 use std::os::raw::c_char;

@@ -1,4 +1,4 @@
-﻿//! # AnyCodec
+//! # AnyCodec
 //!
 //! One audio/video codec engine that prefers the platform's own media framework
 //! and always keeps a software fallback available.

@@ -1,4 +1,4 @@
-﻿//! Reference-counted immutable byte storage: the bottom of the memory-safety
+//! Reference-counted immutable byte storage: the bottom of the memory-safety
 //! story.
 //!
 //! Every buffer handed between AnyCodec layers is an [`Buffer`]. It is

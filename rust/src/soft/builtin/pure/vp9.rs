@@ -1,4 +1,4 @@
-﻿//! Pure-Rust **VP9** decode *and* encode, on [`rusty_vp9`].
+//! Pure-Rust **VP9** decode *and* encode, on [`rusty_vp9`].
 //!
 //! VP9 is self-describing: a frame's uncompressed header carries the picture
 //! size, the colour configuration and the bit depth, so neither direction needs

@@ -13,6 +13,29 @@ automatically:
 The answering of *"did my encode silently fall back to software?"* is a
 first-class feature, not an afterthought: every session reports a `CodecPath`.
 
+## Requirements
+
+The package ships Dart and Rust source, and **compiles the Rust engine on the
+machine that builds your app**. The first build takes a few minutes; later builds
+are incremental.
+
+| Requirement | Why |
+|-------------|-----|
+| Dart SDK `^3.13.5` | build hooks and code assets |
+| A Rust toolchain | `rust/rust-toolchain.toml` pins the exact version and targets; install [rustup](https://rustup.rs) and the pinned toolchain is fetched on first build |
+| **Linux:** `pkg-config` plus the GStreamer development packages | `gstreamer-rs` is *linked*, not `dlopen`ed, so the crate does not compile without them: `apt install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev` |
+| **Windows:** MSVC build tools (Visual Studio 2022+ with "Desktop development with C++") | the Rust target is `*-pc-windows-msvc` |
+| **macOS / iOS:** Xcode command line tools | the `objc2` crates need the system frameworks at link time |
+| **Android:** nothing extra | the `ndk` crate carries its own declarations |
+
+The other platform SDKs are *not* needed to build: Android, Apple and Windows
+bindings are Rust source with no external toolchain requirement. Only Linux
+needs its framework installed up front.
+
+Build hooks and code assets are a relatively new mechanism. If your SDK predates
+them, pin `hooks`/`code_assets` as this package does, or upgrade; `dart pub
+publish --dry-run` and `dart test` both exercise the hook path.
+
 ## Quick start
 
 ```dart

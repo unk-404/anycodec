@@ -1,7 +1,7 @@
-﻿//! Pure-Rust **ALAC** (Apple Lossless) decoding, on [`alac`].
+//! Pure-Rust **ALAC** (Apple Lossless) decoding, on [`alac`].
 //!
-//! ALAC is a packet codec with no in-band configuration: a *magic cookie* 鈥?the
-//! `alac` atom's `ALACSpecificConfig` 鈥?carries the frame length, bit depth,
+//! ALAC is a packet codec with no in-band configuration: a *magic cookie* — the
+//! `alac` atom's `ALACSpecificConfig` — carries the frame length, bit depth,
 //! channel count and sample rate that every packet's Rice parameters depend on.
 //! So [`DecoderConfig::extradata`] is mandatory here, and a decoder built
 //! without it is refused by name rather than producing silence.
@@ -282,7 +282,7 @@ mod tests {
             let config = DecoderConfig::new(codec);
             let result = AlacDecoder::new(&config);
             if codec == CODEC {
-                // ALAC always needs a cookie, so even its own codec fails here 鈥?                // the point is that it fails for *that* reason.
+                // ALAC always needs a cookie, so even its own codec fails here —                 // the point is that it fails for *that* reason.
                 assert!(result.is_err());
             } else {
                 let error = result.err().expect("only alac may get past the codec check");

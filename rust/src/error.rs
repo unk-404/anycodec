@@ -1,4 +1,4 @@
-﻿//! Error type shared by every AnyCodec backend.
+//! Error type shared by every AnyCodec backend.
 //!
 //! The variants are deliberately coarse: the FFI layer maps [`ErrorKind`] onto a
 //! stable `i32` status code, so adding a new *message* is free while adding a new

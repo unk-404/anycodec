@@ -1,4 +1,4 @@
-﻿//! Pure-Rust software **decoders** for MP3, AAC, Vorbis, FLAC and ALAC,
+//! Pure-Rust software **decoders** for MP3, AAC, Vorbis, FLAC and ALAC,
 //! implemented on top of `symphonia`'s codec layer.
 //!
 //! There is no container here: AnyCodec deals in bare codec bitstreams, so the

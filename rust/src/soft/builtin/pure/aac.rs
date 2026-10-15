@@ -1,11 +1,11 @@
-﻿//! Pure-Rust **AAC** (MPEG-4 Advanced Audio Coding) decode *and* encode, on
+//! Pure-Rust **AAC** (MPEG-4 Advanced Audio Coding) decode *and* encode, on
 //! [`rusty_aac`].
 //!
 //! ## Decode
 //!
 //! Two input shapes reach the same decoder:
 //!
-//! * **ADTS** elementary streams, where each packet starts with its own header 鈥?//!   no `extradata` is needed and the decoder learns its configuration from the
+//! * **ADTS** elementary streams, where each packet starts with its own header — //!   no `extradata` is needed and the decoder learns its configuration from the
 //!   first header; and
 //! * **raw access units** (what an MP4 `stsd`/`esds` carries), which carry no
 //!   configuration at all, so the `AudioSpecificConfig` *must* arrive through
@@ -436,7 +436,7 @@ mod tests {
 
     #[test]
     fn a_stereo_44100_config_is_two_bytes() {
-        // object_type 2, sf_index 4, channel configuration 2 鈥?the value every
+        // object_type 2, sf_index 4, channel configuration 2 — the value every
         // MP4 muxer stores for this geometry.
         assert_eq!(audio_specific_config(44_100, 2).as_slice(), &[0x12, 0x10]);
     }
@@ -475,7 +475,7 @@ mod tests {
     #[test]
     fn a_malformed_extradata_is_rejected_with_a_readable_reason() {
         let config = decoder_config().with_extradata(Buffer::from_slice(&[]));
-        // An empty buffer means "unconfigured", not "malformed" 鈥?it is accepted
+        // An empty buffer means "unconfigured", not "malformed" — it is accepted
         // as an ADTS-only decoder.
         assert!(AacDecoder::new(&config).is_ok());
 

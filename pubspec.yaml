@@ -1,6 +1,21 @@
 name: anycodec
-description: "A new Dart FFI package project."
-version: 0.0.1
+description: >-
+  Cross-platform audio/video codec engine for Dart and Flutter: platform-native
+  codecs first (MediaCodec, Media Foundation, VideoToolbox, GStreamer, WebCodecs)
+  with an always-available software fallback.
+version: 0.1.0
+
+# NOTE: these two point at the project's eventual public home. Confirm them
+# before the first release — pub.dev renders both, and the score depends on them.
+repository: https://github.com/unk-404/anycodec
+issue_tracker: https://github.com/unk-404/anycodec/issues
+
+topics:
+  - codec
+  - video
+  - audio
+  - ffi
+  - rust
 
 environment:
   sdk: ^3.13.5
@@ -13,8 +28,17 @@ dependencies:
   native_toolchain_rust: ^1.0.7
   web: ^1.1.1
 
+# Lower bounds matter beyond version solving: `dart pub downgrade` is what
+# pub.dev's scoring resolves, and a too-old `platform` has no
+# `Platform.packageRoot`, which makes ffigen's *build hook* fail to compile.
+# That failure appears only as `[pub-downgrade-failed]`, never as an analyzer
+# error, so the bound is the only thing holding it back.
 dev_dependencies:
   ffigen: ^23.0.0
   flutter_lints: ^6.0.0
   platform: ^3.2.0
   test: ^1.28.0
+  # Declared rather than used transitively: `.github/scripts/validate_ci.dart`
+  # parses the workflow, and reaching into another package's dependency would
+  # need a `depend_on_referenced_packages` suppression to keep the analyzer quiet.
+  yaml: ^3.1.2

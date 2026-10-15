@@ -1,11 +1,11 @@
-﻿//! Layer 3b 鈥?the software fallback.
+//! Layer 3b — the software fallback.
 //!
 //! Two tiers, in this order:
 //!
-//! 1. [`builtin`] 鈥?codecs compiled into the binary. Pure Rust, no `dlopen`, no
+//! 1. [`builtin`] — codecs compiled into the binary. Pure Rust, no `dlopen`, no
 //!    system dependency, works on every target including ones with no media
 //!    framework at all.
-//! 2. [`ffmpeg`] 鈥?`libavcodec` loaded at runtime through `libloading`. This is
+//! 2. [`ffmpeg`] — `libavcodec` loaded at runtime through `libloading`. This is
 //!    the general-purpose fallback: it can serve *every* codec AnyCodec routes,
 //!    but only when the host actually has FFmpeg's shared libraries. Nothing is
 //!    required at build time.

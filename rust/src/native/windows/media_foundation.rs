@@ -1,4 +1,4 @@
-﻿//! The Media Foundation half of the Windows backend.
+//! The Media Foundation half of the Windows backend.
 //!
 //! Media Foundation exposes codecs as *Media Foundation Transforms* (MFTs): COM
 //! objects that negotiate a pair of media types and then run a synchronous
@@ -25,7 +25,7 @@
 //! `MF_TRANSFORM_ASYNC_UNLOCK` and driven through `IMFMediaEventGenerator`. This
 //! backend enumerates synchronous transforms only, so
 //! [`CodecPath::hardware_accelerated`] is reported as `false` everywhere. That is
-//! the truth 鈥?the encode runs on the CPU 鈥?and claiming otherwise would be the
+//! the truth — the encode runs on the CPU — and claiming otherwise would be the
 //! exact kind of silent lie [`CodecPath`] exists to prevent.
 
 use std::collections::VecDeque;
@@ -1235,7 +1235,7 @@ mod tests {
     /// The end-to-end native-capability test: build a real H.264 encoder, feed it
     /// synthetic NV12 pictures, and require at least one packet out. If the
     /// transform is genuinely absent the failure must be a specific reason, not a
-    /// panic 鈥?but on Windows it is always present, so this asserts production.
+    /// panic — but on Windows it is always present, so this asserts production.
     #[test]
     fn a_real_h264_encode_produces_a_packet() {
         if !framework_available() {

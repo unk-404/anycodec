@@ -1,11 +1,11 @@
-﻿//! Resolution of `libavcodec` at runtime.
+//! Resolution of `libavcodec` at runtime.
 //!
 //! Nothing in this module is a build-time dependency. The shared libraries are
 //! searched for in the platform's usual places and loaded on first use, and the
 //! `libavcodec` entry points AnyCodec needs are then resolved by name.
 //!
-//! Every failure turns into a *specific* message 鈥?`"libavcodec.so.61 not found
-//! (searched: ...)"`, `"avcodec-61.dll is present but has no avcodec_version"` 鈥?//! because that string is what ends up in `CodecPath::fallback_reason` and
+//! Every failure turns into a *specific* message — `"libavcodec.so.61 not found
+//! (searched: ...)"`, `"avcodec-61.dll is present but has no avcodec_version"` — //! because that string is what ends up in `CodecPath::fallback_reason` and
 //! therefore in front of a developer trying to work out why they are on software.
 
 /// What was found, once, for the process lifetime.

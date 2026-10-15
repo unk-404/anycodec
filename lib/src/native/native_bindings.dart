@@ -1,4 +1,4 @@
-﻿/// The typed facade over the generated `@ffi.Native` bindings.
+/// The typed facade over the generated `@ffi.Native` bindings.
 ///
 /// Everything in this library runs on a **worker isolate**, never on the UI
 /// isolate: it is here, and only here, that native handles are created, used,

@@ -1,0 +1,50 @@
+# Files excluded from the published package.
+#
+# This file is **required**, not optional: `dart pub publish` falls back to
+# `.gitignore` when `.pubignore` is absent, and `.gitignore` does not mention
+# `.agents/` in a way that survives the switch. Since `.agents/` holds complete
+# copies of this crate (the isolated verification workspaces), shipping it would
+# turn a ~1 MB package into tens of megabytes of duplicated source.
+#
+# Every pattern is rooted with a leading `/`. That is deliberate and it is the
+# single most expensive lesson in this project's history: an unanchored `build/`
+# matches at *any* depth, so it silently deletes `lib/src/build/`, and an
+# unanchored `wasmtime/` deleted a whole `lib/src/wasmtime/` API layer. The
+# package published fine and did not compile for anyone. Written as `/build/`,
+# the same pattern only ever matches the package root.
+#
+# `.github/scripts/check_archive.dart` asserts the consequence of getting this
+# wrong: it unpacks the dry-run archive and fails if any library is incomplete.
+
+# --- the agent's own workspace, never shipped -------------------------------
+/.agents/
+/.oxideav-research/
+
+# --- build output and caches ------------------------------------------------
+/.dart_tool/
+/build/
+/coverage/
+/doc/api/
+/rust/target/
+/example/.dart_tool/
+/example/build/
+/example/coverage/
+/example/.flutter-plugins
+/example/.flutter-plugins-dependencies
+/example/linux/flutter/ephemeral/
+/example/macos/Flutter/ephemeral/
+/example/windows/flutter/ephemeral/
+/example/ios/Flutter/ephemeral/
+
+# --- editor and OS noise ----------------------------------------------------
+/.vscode/
+/.idea/
+**/*.iml
+.DS_Store
+
+# --- lockfiles ---------------------------------------------------------------
+# A Dart library must not pin its consumers, so the pubspec locks stay out. The
+# Rust lock is the opposite case: the build hook compiles a cdylib whose
+# dependency versions should not drift under a consumer's feet, so it ships.
+/pubspec.lock
+/example/pubspec.lock

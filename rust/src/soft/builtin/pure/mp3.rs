@@ -1,4 +1,4 @@
-﻿//! Pure-Rust **MP3** (MPEG-1/2/2.5 Layer III) decode *and* encode, on
+//! Pure-Rust **MP3** (MPEG-1/2/2.5 Layer III) decode *and* encode, on
 //! [`rusty_mp3`].
 //!
 //! MP3 is the one codec in this tier that needs no `extradata` in either

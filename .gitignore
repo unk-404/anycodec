@@ -4,17 +4,17 @@
 *.pyc
 *.swp
 .DS_Store
-.atom/
-.buildlog/
+/.atom/
+/.buildlog/
 .history
-.svn/
-migrate_working_dir/
+/.svn/
+/migrate_working_dir/
 
 # IntelliJ related
 *.iml
 *.ipr
 *.iws
-.idea/
+/.idea/
 
 # The .vscode folder contains launch configuration and tasks you configure in
 # VS Code which you may wish to be included in version control, so this line
@@ -25,10 +25,16 @@ migrate_working_dir/
 # Libraries should not include pubspec.lock, per https://dart.dev/guides/libraries/private-files#pubspeclock.
 /pubspec.lock
 **/doc/api/
-.dart_tool/
+/.dart_tool/
 .flutter-plugins-dependencies
 /build/
 /coverage/
 
 /.vscode/
-.agents/
+/.agents/
+
+# Root-anchored on purpose. In gitignore semantics an unanchored directory
+# pattern matches at ANY depth, so `build/` would also swallow a hypothetical
+# `lib/src/build/` - and the deletion is silent, nothing reports it. The same
+# mistake in `.pubignore` once shipped a package that compiled for nobody.
+# Keep every directory pattern here rooted with a leading `/`.
