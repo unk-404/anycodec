@@ -387,12 +387,38 @@ pub fn sample_format_of(format: gst_audio::AudioFormat) -> Option<SampleFormat> 
 ///
 /// The geometry is included because an `appsrc` must publish the frame size it
 /// will be fed, and `videoconvert` then has nothing left to choose.
+///
+/// Built with [`gst::Caps::builder`] rather than
+/// [`gst_video::VideoCapsBuilder`], and that is not a style choice.
+/// `VideoCapsBuilder` silently appends
+/// `framerate=(fraction)[ 0/1, 2147483647/1 ]` — a *range* — so the caps it
+/// returns are **not fixed**:
+///
+/// ```text
+/// video/x-raw, format=I420, width=64, height=64,
+/// framerate=(fraction)[ 0/1, 2147483647/1 ]
+/// ```
+///
+/// `appsrc` turns `set_caps` into a `gst_event_new_caps`, which asserts that its
+/// caps are fixed. Unfixed caps therefore do not fail where they are created;
+/// they fail later, in the pipeline, as
+///
+/// ```text
+/// gst_event_new_caps: assertion 'gst_caps_is_fixed (caps)' failed
+/// Internal data stream error ... reason not-negotiated (-4)
+/// ```
+///
+/// — naming neither the caps nor the offending field. Worse, whether it fails at
+/// all depends on the encoder: `x264enc` tolerates an unfixed `framerate` and
+/// `openh264enc` does not, which is why this looked like an environment
+/// difference between one Linux box and another rather than a bug in this file.
+/// The regression test is `every_caps_we_hand_to_an_appsrc_is_fixed`.
 pub fn raw_video_caps(format: PixelFormat, width: u32, height: u32) -> Result<gst::Caps> {
     let parsed = video_format(format)?;
-    Ok(gst_video::VideoCapsBuilder::new()
-        .format(parsed)
-        .width(width as i32)
-        .height(height as i32)
+    Ok(gst::Caps::builder("video/x-raw")
+        .field("format", parsed.to_string())
+        .field("width", width as i32)
+        .field("height", height as i32)
         .build())
 }
 
@@ -596,6 +622,52 @@ mod tests {
         // GStreamer is perfectly healthy.
         assert!(!element_available("anycodec-definitely-not-an-element"));
         assert_eq!(select_element(&[], &element_available), None);
+    }
+
+    #[test]
+    #[ignore = "requires GStreamer"]
+    fn every_caps_we_hand_to_an_appsrc_is_fixed() {
+        ensure_initialised().expect("GStreamer must initialise");
+        // The check whose absence produced a `not-negotiated (-4)` on one Linux
+        // box and not another.
+        //
+        // `gst_event_new_caps()` asserts that its caps are *fixed*, and an `appsrc`
+        // turns `set_caps` into exactly that event on the next push. Unfixed caps
+        // therefore do not fail where they are built; they fail later, inside the
+        // pipeline, as an error that names neither the caps nor the field. And
+        // whether it fails at all depends on the encoder - `x264enc` tolerates an
+        // unfixed `framerate`, `openh264enc` refuses to negotiate - which is what
+        // made it look like an environment difference.
+        //
+        // Only the caps that actually reach `appsrc` are listed. Deliberately *not*
+        // here: `raw_video_format_caps` and `raw_audio_caps_optional`, which are
+        // handed to a `capsfilter` on the decoder's output edge. Those carry width,
+        // height and framerate as *ranges* on purpose, because the bitstream
+        // decides the geometry and constraining it would reject valid streams.
+        let mut cases: Vec<(&str, gst::Caps)> = vec![
+            (
+                "raw_video_caps",
+                raw_video_caps(PixelFormat::I420, 64, 64).expect("I420 is a video format"),
+            ),
+            (
+                "raw_audio_caps",
+                raw_audio_caps(SampleFormat::S16, 48_000, 2).expect("S16 is an audio format"),
+            ),
+            (
+                "compressed_caps_for(aac, rate, channels)",
+                compressed_caps_for(Codec::Audio(AudioCodec::Aac), Some(48_000), Some(2))
+                    .expect("aac has a media type"),
+            ),
+        ];
+        for codec in Codec::ALL {
+            cases.push((
+                "compressed_caps",
+                compressed_caps(codec).expect("every codec has a media type"),
+            ));
+        }
+        for (name, caps) in cases {
+            assert!(caps.is_fixed(), "{name} is not fixed: {caps}");
+        }
     }
 
     #[test]

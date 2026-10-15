@@ -1,8 +1,5 @@
 name: anycodec
-description: >-
-  Cross-platform audio/video codec engine for Dart and Flutter: platform-native
-  codecs first (MediaCodec, Media Foundation, VideoToolbox, GStreamer, WebCodecs)
-  with an always-available software fallback.
+description: Cross-platform audio/video codec engine for Dart and Flutter
 version: 0.1.1
 
 # NOTE: these two point at the project's eventual public home. Confirm them

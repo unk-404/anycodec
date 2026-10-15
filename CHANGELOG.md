@@ -15,6 +15,24 @@ so a build of 0.1.1 is a drop-in replacement for 0.1.0.
 
   The guard is now `if (!input.config.buildCodeAssets) return;`.
 
+* **H.264 encoding failed on any Linux machine where `openh264enc` is the
+  selected encoder.** The raw-video caps handed to `appsrc` were built with
+  `gst_video::VideoCapsBuilder`, which silently appends
+  `framerate=(fraction)[ 0/1, 2147483647/1 ]`. That is a *range*, so the caps were
+  not fixed — and `appsrc` turns `set_caps` into a `gst_event_new_caps`, which
+  asserts that its caps are fixed:
+
+  ```
+  gst_event_new_caps: assertion 'gst_caps_is_fixed (caps)' failed
+  Internal data stream error ... reason not-negotiated (-4)
+  ```
+
+  `x264enc` tolerates an unfixed `framerate`; `openh264enc` refuses to negotiate.
+  The same build therefore worked on one Linux box and failed on another, which is
+  what made it look like an environment difference rather than a bug. The caps are
+  now built with `gst::Caps::builder`, and
+  `native::linux::elements::tests::every_caps_we_hand_to_an_appsrc_is_fixed`
+  asserts the invariant that was missing.
 * **Nine `unresolved doc reference` warnings**, all from
   `lib/anycodec_platform.dart`. That library is a `library;` barrel with
   conditional exports, so the names living in one platform branch cannot be
