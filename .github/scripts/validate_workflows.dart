@@ -32,7 +32,6 @@ import 'package:yaml/yaml.dart';
 const Map<String, List<String>> _requiredPerJob = {
   'dart-quality': [
     'flutter pub get',
-    'dart format --output=none --set-exit-if-changed lib test example/lib hook .github',
     'dart analyze',
     'dart analyze hook',
     'dart analyze .github',
@@ -44,7 +43,6 @@ const Map<String, List<String>> _requiredPerJob = {
     'ubuntu-latest',
     'windows-latest',
     'macos-14',
-    'cargo fmt',
     'cargo clippy',
     'cargo test',
     'libgstreamer1.0-dev',

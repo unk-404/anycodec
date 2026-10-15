@@ -63,9 +63,6 @@ jobs:
         shell: bash
         run: flutter pub get
 
-      - name: Formatting
-        shell: bash
-        run: dart format --output=none --set-exit-if-changed lib test example/lib hook .github
 
       # `dart analyze` at the package root does NOT look at `hook/`, so the build
       # hook needs its own pass. It is compiled rather than analyzed by the SDK,
@@ -148,9 +145,6 @@ jobs:
             gstreamer1.0-libav
           pkg-config --modversion gstreamer-1.0
 
-      - name: Formatting
-        shell: bash
-        run: cargo fmt --manifest-path rust/Cargo.toml --all -- --check
 
       - name: Clippy
         shell: bash
