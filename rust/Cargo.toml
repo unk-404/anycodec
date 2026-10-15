@@ -1,0 +1,146 @@
+﻿[package]
+name = "anycodec"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.85"
+license = "MIT"
+repository = "https://github.com/anycodec/anycodec"
+authors = ["AnyCodec contributors"]
+description = "Cross-platform audio/video codec engine: platform frameworks first, software fallback always."
+
+# `native_toolchain_rust` requires both a staticlib and a cdylib; `rlib` keeps
+# `cargo test` and ordinary `cargo build` consumers happy.
+[lib]
+name = "anycodec"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+# ---------------------------------------------------------------------------
+# There are deliberately NO cargo features.
+#
+# A Flutter plugin is consumed through a build hook; the application cannot pick
+# cargo features, so a feature-gated backend would make the set of usable codecs
+# depend on how someone happened to build the package. Capability reporting is
+# only trustworthy if it describes the *machine*, not the build. So every tier is
+# always compiled in, and which backends are usable is decided at runtime and
+# reported through `CodecPath` / `Engine::capabilities`.
+# ---------------------------------------------------------------------------
+[dependencies]
+log = "0.4"
+# Runtime dlopen/LoadLibrary, used by the libavcodec software fallback so that
+# FFmpeg is not a build-time dependency. (GStreamer, the Linux backend, *is*
+# linked, through `gstreamer-rs` — see that target's dependency block.)
+libloading = "0.8"
+# Tier-1 software decoders: pure Rust, no C, no cmake, no nasm.
+symphonia = { version = "0.5", default-features = false, features = [
+  "flac",
+  "mp3",
+  "aac",
+  "alac",
+  "vorbis",
+  "ogg",
+  "isomp4",
+  "pcm",
+] }
+# Tier-1 software FLAC encoder: pure Rust, gives the software *encode* path a
+# real, testable implementation. Kept as the *fallback* encoder behind the
+# pure-Rust `rusty_flac` encoder registered by `soft::builtin::pure::flac`.
+flacenc = "0.5"
+# Tier-1 pure-Rust codecs (`soft::builtin::pure`). None of these has a C
+# toolchain, cmake or nasm in its build graph; all are plain `cargo build`.
+#
+# `rust_h264 = "0.4"` is deliberately NOT here. Its decoder is built on
+# `std::rc::Rc` (decoder.rs, dpb.rs, mv_pred.rs, slice_context.rs), so
+# `rust_h264::decoder::Decoder` is `!Send`, and `anycodec::engine::Decoder`
+# requires `Send`. Registering it needs `unsafe` or a per-decoder worker thread,
+# and a capability this build cannot exercise would make the report lie. See
+# `src/soft/builtin/pure/mod.rs`.
+rusty_mp3 = "1"
+rusty_aac = "1"
+rusty_flac = "0.2"
+rusty_vp9 = "0.1"
+opus-pure = "0.2"
+rusty_h265 = "0.6"
+# The ALAC decoder itself needs no container parser, so its default `mp4`
+# feature (which would add `mp4parse`) is switched off: the only thing added to
+# the build graph here is the crates above plus `rusty_h265-accel`, which
+# `rusty_h265` itself requires.
+alac = { version = "0.5", default-features = false }
+
+[target.'cfg(target_os = "android")'.dependencies]
+# Safe wrappers over the Android NDK. `ndk::media` is a complete, memory-safe
+# `AMediaCodec` binding, so the Android backend drives MediaCodec through it
+# rather than re-declaring the NDK C API by hand.
+ndk = { version = "0.9", features = ["media", "api-level-29"] }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+# GObject/GLib wrappers over the GStreamer plugin framework. GStreamer is the
+# media framework every Linux desktop already ships, and its element registry is
+# what makes `register()` / `probe_devices()` honest: a codec is advertised
+# exactly when an element for it is really present.
+#
+# This is the only platform backend that is *linked* rather than resolved with
+# `dlopen`, so `pkg-config` plus the GStreamer development packages are needed at
+# build time — present on any Linux host that can run a Flutter desktop build.
+# The trade is deliberate: `gstreamer-rs` gives type-safe `appsrc`/`appsink`
+# marshalling and the typed caps builders that keep the raw format from being
+# silently renegotiated. `log` routes GStreamer's diagnostics into the `log`
+# crate the rest of AnyCodec uses.
+gstreamer = { version = "0.24", features = ["log"] }
+gstreamer-app = "0.24"
+gstreamer-video = "0.24"
+gstreamer-audio = "0.24"
+
+[target.'cfg(windows)'.dependencies]
+# Official Microsoft COM/Win32 bindings, used to drive Media Foundation.
+windows = { version = "0.62", features = [
+  "Win32_Foundation",
+  "Win32_System_Com",
+  "Win32_System_Com_StructuredStorage",
+  "Win32_System_Variant",
+  "Win32_Media",
+  "Win32_Media_MediaFoundation",
+] }
+
+[target.'cfg(any(target_os = "macos", target_os = "ios"))'.dependencies]
+# The `objc2` family: VideoToolbox and AudioToolbox are driven through these
+# generated bindings. This project deliberately does not use
+# `oxideav-videotoolbox` / `oxideav-audiotoolbox`, and the Apple backend declares
+# no `extern` block of its own.
+objc2 = "0.6"
+objc2-core-foundation = "0.3"
+objc2-core-media = "0.3"
+objc2-core-video = "0.3"
+# `AudioStreamBasicDescription`, `AudioBufferList` and
+# `AudioStreamPacketDescription` live in CoreAudioTypes, which
+# `objc2-audio-toolbox` uses internally but does not re-export.
+objc2-core-audio-types = "0.3"
+objc2-video-toolbox = { version = "0.3", default-features = false, features = [
+  "std",
+  "VTBase",
+  "VTCompressionSession",
+  "VTCompressionProperties",
+  "VTDecompressionSession",
+  "VTDecompressionProperties",
+  "VTErrors",
+  "VTSession",
+  "VTVideoEncoderList",
+  "VTProfessionalVideoWorkflow",
+  # `VTCompressionOutputCallback` / `VTDecompressionOutputCallback` and both
+  # `create` constructors are gated on these two cross-crate features.
+  "objc2-core-media",
+  "objc2-core-video",
+] }
+objc2-audio-toolbox = { version = "0.3", default-features = false, features = [
+  "std",
+  "AudioConverter",
+  "AudioFormat",
+  "objc2-core-audio-types",
+] }
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+
+[profile.dev]
+opt-level = 1
