@@ -1,41 +1,27 @@
-name: anycodec
-description: Cross-platform audio/video codec engine for Dart and Flutter
-version: 0.1.1
-
-# NOTE: these two point at the project's eventual public home. Confirm them
-# before the first release — pub.dev renders both, and the score depends on them.
-repository: https://github.com/unk-404/anycodec
-issue_tracker: https://github.com/unk-404/anycodec/issues
-
-topics:
-  - codec
-  - video
-  - audio
-  - ffi
-  - rust
+# The AnyCodec workspace root.
+#
+# This is a **Dart pub workspace** (SDK 3.6+), not a package. It exists so that
+# every project in the repository shares one dependency resolution, one
+# `pubspec.lock` and one `.dart_tool/` — which is what makes "the packages all
+# build against the same versions" a fact rather than a hope. It is never
+# published, and nothing imports it.
+#
+# Everything that ships or builds lives under `packages/`. A package opts in with
+# `resolution: workspace` in its own pubspec; forgetting that marker is silent —
+# the package simply gets its own resolution again.
+#
+# The Rust engine is deliberately *not* a Cargo workspace: there is exactly one
+# crate (`packages/anycodec/rust`), and it stays that way. "One native artifact"
+# is a product requirement, so splitting it into crates would only add seams.
+name: anycodec_workspace
+publish_to: none
 
 environment:
   sdk: ^3.13.5
 
-dependencies:
-  code_assets: ^2.1.0
-  ffi: ^2.2.0
-  hooks: ^2.2.0
-  logging: ^1.3.0
-  native_toolchain_rust: ^1.0.7
-  web: ^1.1.1
+workspace:
+  - packages/anycodec
+  - packages/anycodec_video
+  - packages/anycodec_audio
+  - packages/anycodec_player
 
-# Lower bounds matter beyond version solving: `dart pub downgrade` is what
-# pub.dev's scoring resolves, and a too-old `platform` has no
-# `Platform.packageRoot`, which makes ffigen's *build hook* fail to compile.
-# That failure appears only as `[pub-downgrade-failed]`, never as an analyzer
-# error, so the bound is the only thing holding it back.
-dev_dependencies:
-  ffigen: ^23.0.0
-  flutter_lints: ^6.0.0
-  platform: ^3.2.0
-  test: ^1.28.0
-  # Declared rather than used transitively: `.github/scripts/validate_ci.dart`
-  # parses the workflow, and reaching into another package's dependency would
-  # need a `depend_on_referenced_packages` suppression to keep the analyzer quiet.
-  yaml: ^3.1.2

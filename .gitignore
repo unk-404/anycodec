@@ -22,13 +22,25 @@
 #.vscode/
 
 # Flutter/Dart/Pub related
-# Libraries should not include pubspec.lock, per https://dart.dev/guides/libraries/private-files#pubspeclock.
-/pubspec.lock
+#
+# The root `pubspec.lock` IS committed, and that is the whole point of the
+# workspace: one lock pins every member to the same versions. A *package* must
+# not pin its consumers, which is why the members have no lock of their own —
+# pub enforces that for us (a workspace member with a `pubspec.lock` is an error).
 **/doc/api/
 /.dart_tool/
+/packages/*/.dart_tool/
 .flutter-plugins-dependencies
 /build/
+/packages/*/build/
 /coverage/
+/packages/*/coverage/
+
+# Build output of the one Rust artifact.
+/packages/*/rust/target/
+
+# Example apps are applications, not libraries, but their locks are noise here.
+/packages/*/example/pubspec.lock
 
 /.vscode/
 /.agents/

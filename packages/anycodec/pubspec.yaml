@@ -1,0 +1,47 @@
+name: anycodec
+description: Cross-platform audio/video codec engine for Dart and Flutter
+version: 0.1.1
+
+# NOTE: these two point at the project's eventual public home. Confirm them
+# before the first release — pub.dev renders both, and the score depends on them.
+repository: https://github.com/unk-404/anycodec
+issue_tracker: https://github.com/unk-404/anycodec/issues
+
+topics:
+  - codec
+  - video
+  - audio
+  - ffi
+  - rust
+
+environment:
+  sdk: ^3.13.5
+
+# This package is a member of the repository's pub workspace (see
+# `../../pubspec.yaml`). The marker is what makes the whole repo share one
+# resolution, one `pubspec.lock` and one `.dart_tool/`; leaving it out silently
+# gives this package its own resolution, which is the exact problem the workspace
+# exists to prevent.
+resolution: workspace
+
+dependencies:
+  code_assets: ^2.1.0
+  ffi: ^2.2.0
+  hooks: ^2.2.0
+  logging: ^1.3.0
+  native_toolchain_rust: ^1.0.7
+  web: ^1.1.1
+
+# Lower bounds matter beyond version solving: `dart pub downgrade` is what
+# pub.dev's scoring resolves, and a too-old `platform` has no
+# `Platform.packageRoot`, which makes ffigen's *build hook* fail to compile.
+# That failure appears only as `[pub-downgrade-failed]`, never as an analyzer
+# error, so the bound is the only thing holding it back.
+dev_dependencies:
+  ffigen: ^23.0.0
+  flutter_lints: ^6.0.0
+  platform: ^3.2.0
+  test: ^1.28.0
+  # `yaml` used to live here. It moved to the workspace root, because the only
+  # code that needs it is `.github/scripts/validate_workflows.dart`, which lives
+  # outside every package.

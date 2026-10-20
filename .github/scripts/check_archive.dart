@@ -80,10 +80,20 @@ const List<String> _mustBeComplete = ['lib', 'test', 'rust/src'];
 /// A compressed archive larger than this means something huge got included.
 const int _sizeCeilingKb = 20 * 1024;
 
-void main() {
-  final root = Directory.current;
+void main(List<String> arguments) {
+  // The package under test is located from this script's own path, not from the
+  // current directory. In a monorepo the caller may be anywhere — CI runs it from
+  // the repository root, a developer may run it from `packages/anycodec` — and a
+  // check that silently measures the wrong directory is worse than no check.
+  final root = arguments.isEmpty
+      ? Directory(_join(_repoRoot(), 'packages/anycodec'))
+      : Directory(arguments.first);
   if (!File(_join(root.path, 'pubspec.yaml')).existsSync()) {
-    stderr.writeln('check_archive: run this from the package root');
+    stderr.writeln(
+      'check_archive: ${root.path} is not a package (no pubspec.yaml).\n'
+      'Pass the package directory explicitly: '
+      'dart run .github/scripts/check_archive.dart <package>',
+    );
     exit(2);
   }
 
@@ -353,3 +363,16 @@ String _relative(String root, String path) {
 String _join(String a, String b) => a.endsWith(Platform.pathSeparator)
     ? '$a$b'
     : '$a${Platform.pathSeparator}$b';
+
+/// The repository root, derived from this script's own location.
+///
+/// The script lives at `<root>/.github/scripts/check_archive.dart`, so three
+/// levels up is the root regardless of the caller's working directory. Deriving
+/// it beats relying on the cwd: in a monorepo CI runs from the root and a
+/// developer from `packages/anycodec`, and a check that silently measures the
+/// wrong directory is worse than no check at all.
+String _repoRoot() {
+  var directory = File.fromUri(Platform.script).absolute.parent; // .github/scripts
+  directory = directory.parent; // .github
+  return directory.parent.path; // <root>
+}

@@ -1,0 +1,32 @@
+name: anycodec_audio
+description: >-
+  PCM stream plumbing and spectrum analysis for AnyCodec: a standard audio
+  stream plus FFT data ready to draw. It deliberately contains no player.
+version: 0.1.0
+repository: https://github.com/unk-404/anycodec
+issue_tracker: https://github.com/unk-404/anycodec/issues
+
+topics:
+  - audio
+  - pcm
+  - fft
+  - spectrum
+  - codec
+
+environment:
+  sdk: ^3.13.5
+
+# Member of the repository pub workspace (see `../../pubspec.yaml`).
+resolution: workspace
+
+# Deliberately dependency-free, and that is a design constraint rather than an
+# accident. This package is pure computation - a ring buffer, sample conversion
+# and an FFT - so it must be usable on the web (where `anycodec`'s native engine
+# does not exist), in a plain Dart CLI, and in a test without a build hook. Adding
+# `anycodec` as a dependency would drag a Rust build into a package that only
+# needs to do arithmetic, and would make the FFT unusable on the web.
+dependencies: {}
+
+dev_dependencies:
+  lints: ^6.0.0
+  test: ^1.28.0
