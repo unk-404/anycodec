@@ -23,5 +23,4 @@ workspace:
   - packages/anycodec
   - packages/anycodec_video
   - packages/anycodec_audio
-  - packages/anycodec_player
 

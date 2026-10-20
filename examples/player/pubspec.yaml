@@ -1,0 +1,31 @@
+name: anycodec_player_example
+description: >-
+  Demonstration only: a tiny player-shaped app built on anycodec_video and
+  anycodec_audio. AnyCodec deliberately provides no player - this example shows
+  what an application composes out of the pieces, and what they cost.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ^3.13.5
+  flutter: '>=3.3.0'
+
+# NOT a workspace member, on purpose: an example is not a package, and keeping it
+# out means the workspace's single resolution is not shaped by a demo app.
+dependencies:
+  anycodec:
+    path: ../../packages/anycodec
+  anycodec_video:
+    path: ../../packages/anycodec_video
+  anycodec_audio:
+    path: ../../packages/anycodec_audio
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_lints: ^6.0.0
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true

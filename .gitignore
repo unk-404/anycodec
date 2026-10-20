@@ -41,6 +41,8 @@
 
 # Example apps are applications, not libraries, but their locks are noise here.
 /packages/*/example/pubspec.lock
+/examples/*/pubspec.lock
+/examples/*/*/pubspec.lock
 
 /.vscode/
 /.agents/
